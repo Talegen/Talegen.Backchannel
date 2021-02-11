@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.1</TargetFrameworks>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Talegen, LLC</Authors>
     <Description>Talegen Backchannel Client Library for Resource to Resource (API to API) communication. Provides a base library that can be extended to communicate with REST API using an OIDC IdP for authentication and token retrieval.</Description>
@@ -11,18 +11,22 @@
     <PackageIcon>logo.png</PackageIcon>
     <RepositoryUrl>https://github.com/Talegen/Talegen.Backchannel</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>Initial commit of backchannel client library.</PackageReleaseNotes>
+    <PackageReleaseNotes>Switched to support of netstandard2.0 to allow for integration into Talegen.AspNetCore.Multitenant library.</PackageReleaseNotes>
     <NeutralLanguage>en</NeutralLanguage>
     <ApplicationIcon>Assets\logo.ico</ApplicationIcon>
-    <Version>1.0.0.1</Version>
-    <AssemblyVersion>1.0.0.1</AssemblyVersion>
-    <FileVersion>1.0.0.1</FileVersion>
+    <Version>1.0.0.2</Version>
+    <AssemblyVersion>1.0.0.2</AssemblyVersion>
+    <FileVersion>1.0.0.2</FileVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>D:\Projects\Talegen\GitHub\Talegen.Backchannel\src\Talegen.Backchannel.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="IdentityModel" Version="5.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="Talegen.Common.Core" Version="1.0.0" />
+    <PackageReference Include="Talegen.Common.Core" Version="1.0.3" />
   </ItemGroup>
 
   <ItemGroup>

@@ -132,7 +132,7 @@ namespace Talegen.Backchannel
         /// <summary>
         /// Authenticates the client with the specified scopes in a synchronous manor.
         /// </summary>
-        /// <param name="scopes">The scopes to use.</param>
+        /// <param name="scopes">Contains the scopes that are requested for the client credentials authentication.</param>
         /// <example>
         /// <code>
         ///BackchannelClient client = new BackchannelClient(config)
@@ -140,9 +140,9 @@ namespace Talegen.Backchannel
         /// </code>
         /// </example>
         /// <returns>Returns the result of the authentication.</returns>
-        public virtual bool Authenticate()
+        public virtual bool Authenticate(string scopes = "")
         {
-            return AsyncHelper.RunSync(() => this.AuthenticateAsync());
+            return AsyncHelper.RunSync(() => this.AuthenticateAsync(scopes));
         }
 
         /// <summary>
@@ -325,10 +325,11 @@ namespace Talegen.Backchannel
             return !string.IsNullOrWhiteSpace(content) && !this.HasErrors ? JsonConvert.DeserializeObject<TOut>(content) : default(TOut);
         }
 
-        /// <summary> This method is used to execute a web request and return the results of the request as a defined object type. </summary> <typeparam
-        /// name="TOut">Contains the type of object that is returned from the request.</typeparam> <param name="request">Contains the HttpWebRequest to
-        /// execute.</param> <example> <code> BackchannelClient client = new BackchannelClient(config) var request =
-        /// client.CreateRequest($"/Backchannel/Users"); var tenantDetailModel = client.RequestContent<TenantDetailModel>(request); </code> </example>
+        /// <summary>
+        /// This method is used to execute a web request and return the results of the request as a defined object type.
+        /// </summary>
+        /// <typeparam name="TOut">Contains the type of object that is returned from the request.</typeparam>
+        /// <param name="request">Contains the HttpWebRequest to execute.</param>
         /// <returns>Returns the content of the request response as the specified object.</returns>
         public TOut RequestContent<TOut>(HttpWebRequest request)
         {
@@ -337,10 +338,11 @@ namespace Talegen.Backchannel
             return !string.IsNullOrWhiteSpace(content) && !this.HasErrors ? JsonConvert.DeserializeObject<TOut>(content) : default(TOut);
         }
 
-        /// <summary> This method is used to execute a web request and return the results of the request as a defined object type. </summary> <typeparam
-        /// name="TOut">Contains the type of object that is returned from the request.</typeparam> <param name="request">Contains the HttpWebRequest to
-        /// execute.</param> <example> <code> BackchannelClient client = new BackchannelClient(config) var request =
-        /// client.CreateRequest($"/Backchannel/Users"); var tenantDetailModel = client.RequestContent<TenantDetailModel>(request); </code> </example>
+        /// <summary>
+        /// This method is used to execute a web request and return the results of the request as a defined object type.
+        /// </summary>
+        /// <typeparam name="TOut">Contains the type of object that is returned from the request.</typeparam>
+        /// <param name="request">Contains the HttpWebRequest to execute.</param>
         /// <returns>Returns the content of the request response as the specified object.</returns>
         public async Task<TOut> RequestContentAsync<TOut>(HttpWebRequest request)
         {
@@ -606,18 +608,19 @@ namespace Talegen.Backchannel
             try
             {
                 // execute the request
-                using var response = await request.GetResponseAsync() as HttpWebResponse;
-                using var responseStream = response.GetResponseStream();
-
-                if (responseStream != null)
+                using (var response = await request.GetResponseAsync() as HttpWebResponse)
+                using (var responseStream = response.GetResponseStream())
                 {
-                    resultContent = await new StreamReader(responseStream).ReadToEndAsync();
-
-                    // if the status code was an error and there's content...
-                    if ((int)response.StatusCode >= 400 && !string.IsNullOrWhiteSpace(resultContent))
+                    if (responseStream != null)
                     {
-                        // set the error model
-                        this.LastErrorResponse = JsonConvert.DeserializeObject<BackchannelErrorResponseModel>(resultContent);
+                        resultContent = await new StreamReader(responseStream).ReadToEndAsync();
+
+                        // if the status code was an error and there's content...
+                        if ((int)response.StatusCode >= 400 && !string.IsNullOrWhiteSpace(resultContent))
+                        {
+                            // set the error model
+                            this.LastErrorResponse = JsonConvert.DeserializeObject<BackchannelErrorResponseModel>(resultContent);
+                        }
                     }
                 }
             }
@@ -627,21 +630,23 @@ namespace Talegen.Backchannel
 
                 if (webEx.Response != null)
                 {
-                    using var exceptionResponse = (HttpWebResponse)webEx.Response;
-
-                    if (exceptionResponse != null)
+                    using (var exceptionResponse = (HttpWebResponse)webEx.Response)
                     {
-                        using var responseStream = exceptionResponse.GetResponseStream();
-
-                        if (responseStream != null)
+                        if (exceptionResponse != null)
                         {
-                            resultContent = new StreamReader(responseStream).ReadToEnd();
-
-                            // if the status code was an error and there's content...
-                            if ((int)exceptionResponse.StatusCode >= 400 && !string.IsNullOrWhiteSpace(resultContent))
+                            using (var responseStream = exceptionResponse.GetResponseStream())
                             {
-                                // set the error model
-                                this.LastErrorResponse = JsonConvert.DeserializeObject<BackchannelErrorResponseModel>(resultContent);
+                                if (responseStream != null)
+                                {
+                                    resultContent = new StreamReader(responseStream).ReadToEnd();
+
+                                    // if the status code was an error and there's content...
+                                    if ((int)exceptionResponse.StatusCode >= 400 && !string.IsNullOrWhiteSpace(resultContent))
+                                    {
+                                        // set the error model
+                                        this.LastErrorResponse = JsonConvert.DeserializeObject<BackchannelErrorResponseModel>(resultContent);
+                                    }
+                                }
                             }
                         }
                     }
