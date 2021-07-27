@@ -17,6 +17,7 @@
 namespace Talegen.Backchannel
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Net;
@@ -289,6 +290,49 @@ namespace Talegen.Backchannel
             if (this.HasAuthenticated)
             {
                 request.Headers.Add("Authorization", "Bearer " + this.AccessToken);
+            }
+
+            return request;
+        }
+
+        /// <summary>
+        /// Creates the multipart form request.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="relativeUri">The relative URI.</param>
+        /// <param name="model">The model.</param>
+        /// <param name="fileItems">The file items.</param>
+        /// <returns>Returns a new HttpWebRequest object to execute.</returns>
+        public async Task<HttpWebRequest> CreateMultipartFormRequestAsync<T>(string relativeUri, T model = default, List<FileItem> fileItems = null)
+        {
+            string formDataBoundary = string.Format("----------{0:N}", Guid.NewGuid());
+            string contentType = "multipart/form-data; boundary=" + formDataBoundary;
+            HttpWebRequest request = this.CreateRequest(relativeUri, HttpMethod.Post, contentType: contentType);
+
+            using (MultipartFormDataContent multipartFormData = new MultipartFormDataContent(formDataBoundary))
+            {
+                if (model != null)
+                {
+                    multipartFormData.Add(new StringContent(JsonConvert.SerializeObject(model)));
+                }
+
+                if (fileItems != null)
+                {
+                    foreach (var file in fileItems)
+                    {
+                        using (MemoryStream fileStream = new MemoryStream(file.Contents))
+                        {
+                            string fileName = Path.GetFileName(file.FileName);
+                            multipartFormData.Add(new StreamContent(fileStream), fileName, fileName);
+                        }
+                    }
+                }
+
+                using (Stream requestStream = request.GetRequestStream())
+                {
+                    byte[] byteArray = await multipartFormData.ReadAsByteArrayAsync();
+                    requestStream.Write(byteArray, 0, byteArray.Length);
+                }
             }
 
             return request;

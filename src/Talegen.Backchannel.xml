@@ -141,6 +141,16 @@
              </example>
              <returns>Returns a new HttpWebRequest object to execute.</returns>
         </member>
+        <member name="M:Talegen.Backchannel.BackchannelClient.CreateMultipartFormRequestAsync``1(System.String,``0,System.Collections.Generic.List{Talegen.Backchannel.Models.FileItem})">
+            <summary>
+            Creates the multipart form request.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="relativeUri">The relative URI.</param>
+            <param name="model">The model.</param>
+            <param name="fileItems">The file items.</param>
+            <returns>Returns a new HttpWebRequest object to execute.</returns>
+        </member>
         <member name="M:Talegen.Backchannel.BackchannelClient.RequestContent``2(System.Net.HttpWebRequest,``0)">
             <summary>
             This method is used to execute a web request and return the results of the request as a defined object type.
@@ -588,6 +598,55 @@
             Gets or sets a value indicating whether this instance has unhandled exception.
             </summary>
             <value><c>true</c> if this instance has unhandled exception; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="T:Talegen.Backchannel.Models.FileItem">
+            <summary>
+            This class represents a file item in a form request.
+            </summary>
+        </member>
+        <member name="M:Talegen.Backchannel.Models.FileItem.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Talegen.Backchannel.Models.FileItem" /> class.
+            </summary>
+        </member>
+        <member name="M:Talegen.Backchannel.Models.FileItem.#ctor(System.Byte[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:Talegen.Backchannel.Models.FileItem" /> class.
+            </summary>
+            <param name="contents">The file contents.</param>
+        </member>
+        <member name="M:Talegen.Backchannel.Models.FileItem.#ctor(System.Byte[],System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Talegen.Backchannel.Models.FileItem" /> class.
+            </summary>
+            <param name="contents">The file contents.</param>
+            <param name="filename">The filename.</param>
+        </member>
+        <member name="M:Talegen.Backchannel.Models.FileItem.#ctor(System.Byte[],System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Talegen.Backchannel.Models.FileItem" /> class.
+            </summary>
+            <param name="contents">The file contents.</param>
+            <param name="filename">The filename.</param>
+            <param name="contenttype">The contenttype.</param>
+        </member>
+        <member name="P:Talegen.Backchannel.Models.FileItem.Contents">
+            <summary>
+            Gets or sets the file contents.
+            </summary>
+            <value>The file contents.</value>
+        </member>
+        <member name="P:Talegen.Backchannel.Models.FileItem.FileName">
+            <summary>
+            Gets or sets the name of the file.
+            </summary>
+            <value>The name of the file.</value>
+        </member>
+        <member name="P:Talegen.Backchannel.Models.FileItem.ContentType">
+            <summary>
+            Gets or sets the type of the content.
+            </summary>
+            <value>The type of the content.</value>
         </member>
         <member name="T:Talegen.Backchannel.Properties.Resources">
             <summary>
