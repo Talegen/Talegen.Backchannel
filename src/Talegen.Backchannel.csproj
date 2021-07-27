@@ -11,12 +11,12 @@
     <PackageIcon>logo.png</PackageIcon>
     <RepositoryUrl>https://github.com/Talegen/Talegen.Backchannel</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>Updated to include ability to build muti-part form requests.</PackageReleaseNotes>
+    <PackageReleaseNotes>fixing up stream read issue in multipart.</PackageReleaseNotes>
     <NeutralLanguage>en</NeutralLanguage>
     <ApplicationIcon>Assets\logo.ico</ApplicationIcon>
-    <Version>1.0.3</Version>
-    <AssemblyVersion>1.0.3.0</AssemblyVersion>
-    <FileVersion>1.0.3.0</FileVersion>
+    <Version>1.0.4</Version>
+    <AssemblyVersion>1.0.4.0</AssemblyVersion>
+    <FileVersion>1.0.4.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

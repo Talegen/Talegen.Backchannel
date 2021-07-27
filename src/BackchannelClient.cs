@@ -320,11 +320,8 @@ namespace Talegen.Backchannel
                 {
                     foreach (var file in fileItems)
                     {
-                        using (MemoryStream fileStream = new MemoryStream(file.Contents))
-                        {
-                            string fileName = Path.GetFileName(file.FileName);
-                            multipartFormData.Add(new StreamContent(fileStream), fileName, fileName);
-                        }
+                        string fileName = Path.GetFileName(file.FileName);
+                        multipartFormData.Add(new ByteArrayContent(file.Contents, 0, file.Contents.Length), fileName, fileName);
                     }
                 }
 
