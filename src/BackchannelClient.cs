@@ -305,7 +305,7 @@ namespace Talegen.Backchannel
         /// <returns>Returns a new HttpWebRequest object to execute.</returns>
         public async Task<HttpWebRequest> CreateMultipartFormRequestAsync<T>(string relativeUri, T model = default, List<FileItem> fileItems = null)
         {
-            string formDataBoundary = string.Format("----------{0:N}", Guid.NewGuid());
+            string formDataBoundary = Guid.NewGuid().ToString();
             string contentType = "multipart/form-data; boundary=" + formDataBoundary;
             HttpWebRequest request = this.CreateRequest(relativeUri, HttpMethod.Post, contentType: contentType);
 
@@ -318,10 +318,11 @@ namespace Talegen.Backchannel
 
                 if (fileItems != null)
                 {
+                    int i = 1;
                     foreach (var file in fileItems)
                     {
                         string fileName = Path.GetFileName(file.FileName);
-                        multipartFormData.Add(new ByteArrayContent(file.Contents, 0, file.Contents.Length), fileName, fileName);
+                        multipartFormData.Add(new ByteArrayContent(file.Contents, 0, file.Contents.Length), $"file{i++}", fileName);
                     }
                 }
 
