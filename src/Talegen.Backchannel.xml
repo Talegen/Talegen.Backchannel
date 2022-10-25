@@ -473,6 +473,12 @@
             Gets or sets the password used for password client authentication.
             </summary>
         </member>
+        <member name="P:Talegen.Backchannel.BackchannelConfig.UserAgent">
+            <summary>
+            Gets or sets the user agent.
+            </summary>
+            <value>The user agent.</value>
+        </member>
         <member name="T:Talegen.Backchannel.Models.ErrorType">
             <summary>
             Contains an enumerated list of error message types.

@@ -321,14 +321,31 @@ namespace Talegen.Backchannel
                     int i = 1;
                     foreach (var file in fileItems)
                     {
+                        var data = new ByteArrayContent(file.Contents, 0, file.Contents.Length);
+
+                        if (data.Headers.Contains("Content-Type"))
+                        {
+                            data.Headers.Remove("Content-Type");
+                        }
+
+                        data.Headers.Add("Content-Type", !string.IsNullOrEmpty(file.ContentType) ? file.ContentType : "application/octet-stream");
+
+                        if (data.Headers.Contains("Content-Length"))
+                        {
+                            data.Headers.Remove("Content-Length");
+                        }
+
+                        data.Headers.Add("Content-Length", file.Contents.Length.ToString());
+
                         string fileName = Path.GetFileName(file.FileName);
-                        multipartFormData.Add(new ByteArrayContent(file.Contents, 0, file.Contents.Length), $"file{i++}", fileName);
+                        multipartFormData.Add(data, $"file{i++}", fileName);
                     }
                 }
 
                 using (Stream requestStream = request.GetRequestStream())
                 {
                     byte[] byteArray = await multipartFormData.ReadAsByteArrayAsync();
+                    Console.WriteLine(Encoding.Default.GetString(byteArray));
                     requestStream.Write(byteArray, 0, byteArray.Length);
                 }
             }
@@ -348,7 +365,7 @@ namespace Talegen.Backchannel
         {
             string content = this.RequestContent(request, requestBodyModel);
 
-            return !string.IsNullOrWhiteSpace(content) && !this.HasErrors ? JsonConvert.DeserializeObject<TOut>(content) : default(TOut);
+            return !string.IsNullOrWhiteSpace(content) && !this.HasErrors ? JsonConvert.DeserializeObject<TOut>(content) : default;
         }
 
         /// <summary>
@@ -364,7 +381,7 @@ namespace Talegen.Backchannel
         {
             string content = await this.RequestContentAsync(request, requestBodyModel, cancellationToken);
 
-            return !string.IsNullOrWhiteSpace(content) && !this.HasErrors ? JsonConvert.DeserializeObject<TOut>(content) : default(TOut);
+            return !string.IsNullOrWhiteSpace(content) && !this.HasErrors ? JsonConvert.DeserializeObject<TOut>(content) : default;
         }
 
         /// <summary>
@@ -377,7 +394,7 @@ namespace Talegen.Backchannel
         {
             string content = this.RequestContent(request);
 
-            return !string.IsNullOrWhiteSpace(content) && !this.HasErrors ? JsonConvert.DeserializeObject<TOut>(content) : default(TOut);
+            return !string.IsNullOrWhiteSpace(content) && !this.HasErrors ? JsonConvert.DeserializeObject<TOut>(content) : default;
         }
 
         /// <summary>
@@ -390,7 +407,7 @@ namespace Talegen.Backchannel
         {
             string content = await this.RequestContentAsync(request);
 
-            return !string.IsNullOrWhiteSpace(content) && !this.HasErrors ? JsonConvert.DeserializeObject<TOut>(content) : default(TOut);
+            return !string.IsNullOrWhiteSpace(content) && !this.HasErrors ? JsonConvert.DeserializeObject<TOut>(content) : default;
         }
 
         /// <summary>
@@ -403,7 +420,7 @@ namespace Talegen.Backchannel
             UTF8Encoding utf8 = new UTF8Encoding(true, true);
             string content = this.RequestContent(request);
 
-            return !string.IsNullOrWhiteSpace(content) && !this.HasErrors ? utf8.GetBytes(content) : default(byte[]);
+            return !string.IsNullOrWhiteSpace(content) && !this.HasErrors ? utf8.GetBytes(content) : default;
         }
 
         /// <summary>
@@ -416,7 +433,7 @@ namespace Talegen.Backchannel
             UTF8Encoding utf8 = new UTF8Encoding(true, true);
             string content = await this.RequestContentAsync(request);
 
-            return !string.IsNullOrWhiteSpace(content) && !this.HasErrors ? utf8.GetBytes(content) : default(byte[]);
+            return !string.IsNullOrWhiteSpace(content) && !this.HasErrors ? utf8.GetBytes(content) : default;
         }
 
         /// <summary>
@@ -431,7 +448,7 @@ namespace Talegen.Backchannel
             UTF8Encoding utf8 = new UTF8Encoding(true, true);
             string content = this.RequestContent(request, requestBodyModel);
 
-            return !string.IsNullOrWhiteSpace(content) && !this.HasErrors ? utf8.GetBytes(content) : default(byte[]);
+            return !string.IsNullOrWhiteSpace(content) && !this.HasErrors ? utf8.GetBytes(content) : default;
         }
 
         /// <summary>
@@ -762,10 +779,6 @@ namespace Talegen.Backchannel
             this.LastErrorResponse = null;
             this.LastException = null;
         }
-
-        #endregion Protected Methods
-
-        #region Protected Methods
 
         /// <summary>
         /// This method is used to contact an authority discovery endpoint for information for interacting with the authority.

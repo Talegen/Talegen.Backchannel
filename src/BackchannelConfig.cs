@@ -102,5 +102,11 @@ namespace Talegen.Backchannel
         /// Gets or sets the password used for password client authentication.
         /// </summary>
         public string Password { get; set; }
+
+        /// <summary>
+        /// Gets or sets the user agent.
+        /// </summary>
+        /// <value>The user agent.</value>
+        public string UserAgent { get; set; } = "Talegen Backchannel Client";
     }
 }
